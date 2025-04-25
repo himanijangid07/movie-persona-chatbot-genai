@@ -1,0 +1,34 @@
+{
+  "name": "movie-chatbot-genai",
+  "version": "1.0.0",
+  "description": "movie chat bot",
+  "main": "server.js",
+  "proxy": "https://localhost:8080",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon server.js",
+    "start": "node server.js",
+    "client": "npm start --prefix ./client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "author": "himani",
+  "license": "MIT",
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^7.0.2",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
+    "body-parser": "^2.2.0",
+    "colors": "^1.4.0",
+    "concurrently": "^9.1.2",
+    "cookie": "^1.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.13.3",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.1.10"
+  }
+}
