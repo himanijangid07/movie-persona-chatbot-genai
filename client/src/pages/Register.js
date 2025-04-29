@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { Box, Typography, useTheme, useMediaQuery, TextField, Button, Alert, Collapse } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast'
+import axiosInstance from '../api/axiosConfig';
 import axios from 'axios'
 
 const Register = () => {
@@ -18,20 +19,19 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/api/v1/auth/register', {username, email, password})
+            await axiosInstance.post('/api/v1/auth/register', { username, email, password });
             toast.success("User registered successfully")
             navigate('/login')
         } catch (err) {
-            console.log(error)
-            if(err.response.data.error) {
-                setError(err.response.data.error)
-            }
-            else if(err.message) {
-                setError(err.message)
+            console.log(err);  // log the actual error from axios
+            if (err.response && err.response.data && err.response.data.error) {
+                setError(err.response.data.error);
+            } else if (err.message) {
+                setError(err.message);
             }
             setTimeout(() => {
-                setError("")
-            }, 5000)
+                setError("");
+            }, 5000);
         }
     }
     return (

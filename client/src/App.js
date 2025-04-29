@@ -13,19 +13,22 @@ import {Toaster} from 'react-hot-toast'
 
 function App() {
   const theme = useMemo(() => createTheme(themeSettings(), []))
+
   return (
-    <>
     <ThemeProvider theme={theme}>
-      <CssBaseline/>
-      <Navbar/>
-      <Toaster/>
-      <Routes>
-        <Route path="/" element={<Homepage/>} />
-        <Route path="/register" element={<Register/>} />
-        <Route path="/login" element={<Login/>} />
-      </Routes>
+      <CssBaseline />
+      <Toaster />
+      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Navbar />
+        <div style={{ flex: 1, overflow: 'hidden' }}>
+          <Routes>
+            <Route path="/" element={<Homepage />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </div>
+      </div>
     </ThemeProvider>
-    </>
   );
 }
 

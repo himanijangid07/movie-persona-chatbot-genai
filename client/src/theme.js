@@ -14,27 +14,14 @@ export const colorTokens = {
         900: "#0A0A0A",
         1000: "#000000",
     },
-    primary: {
-        50: "#83d18d",
-        100: "#7ece89",
-        200: "#77cb83",
-        300: "#70c77d",
-        400: "#68c377",
-        500: "#60bf70",
-        600: "#5bb76c",
-        700: "#56af68",
-        800: "#51a763",
-        900: "#4da05e",
-    },
 };
 
 export const themeSettings = (mode) => {
     return {
         palette: {
             primary: {
-                dark: colorTokens.primary[700],
-                main: colorTokens.primary[500],
-                light: colorTokens.primary[50],
+                main: "#1976d2", // Nice blue
+                contrastText: "#ffffff",
             },
             neutral: {
                 dark: colorTokens.grey[700],
@@ -47,7 +34,7 @@ export const themeSettings = (mode) => {
                 default: colorTokens.grey[10],
                 alt: colorTokens.grey[0],
             },
-    },
+        },
         typography: {
             fontSize: 12,
             h1: {
@@ -69,5 +56,21 @@ export const themeSettings = (mode) => {
                 fontSize: 14,
             },
         },
+        components: {
+            MuiTextField: {
+                styleOverrides: {
+                    root: {
+                        '& label.Mui-focused': {
+                        color: '#1976d2', // Blue label when focused
+                    },
+                        '& .MuiOutlinedInput-root': {
+                        '&.Mui-focused fieldset': {
+                        borderColor: '#1976d2', // Blue border when focused
+                    },
+                },
+            },
+        },
+        },
+    },
     };
 };
