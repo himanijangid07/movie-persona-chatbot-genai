@@ -29,6 +29,7 @@ const port = process.env.PORT || 8080;
 
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/chat', chatbotRoutes);
+console.log("✅ Chatbot routes loaded");
 app.use(errorHandler)
 
 app.listen(port, () => {
