@@ -26,10 +26,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
-    currentCharacter: {
+    currentCharacter: String,
+    characterPrompt: String,
+    language: {
         type: String,
-        default: ""
-    },
+        enum: ["english", "hinglish"],
+        default: "english"
+    }
 });
 
 userSchema.pre('save', async function(next) {
