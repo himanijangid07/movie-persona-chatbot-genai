@@ -17,21 +17,8 @@ connectDB();
 
 const app = express();
 
-const allowedOrigins = [
-  'http://localhost:3000',
-  'https://movie-persona-chatbot-genai-7m11e99c3-himanijangid07s-projects.vercel.app'  // Replace with your actual frontend URL
-];
-
 app.use(cors({
-  origin: function(origin, callback) {
-    // Allow requests with no origin (like Postman) or from allowed origins
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
+  origin: ['http://localhost:3000', 'https://movie-persona-chatbot-genai-7m11e99c3-himanijangid07s-projects.vercel.app/']
 }));
 
 app.use(express.json());
