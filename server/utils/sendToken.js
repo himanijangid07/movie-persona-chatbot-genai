@@ -21,6 +21,11 @@ const sendToken = (user, statusCode, res) => {
     res.status(statusCode).json({
         success: true,
         token: accessToken,
+        user: {
+            _id: user._id,
+            username: user.username,
+            email: user.email
+        }
     });
 };
 

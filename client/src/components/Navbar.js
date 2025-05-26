@@ -6,7 +6,7 @@ import toast from 'react-hot-toast'
 
 const Navbar = () => {
     const navigate = useNavigate()
-    const loggedIn = JSON.parse(localStorage.getItem("authToken"))
+    const loggedIn = localStorage.getItem("authToken");
 
     const handlelogout = async () => {
         try {

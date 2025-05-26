@@ -9,6 +9,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoute");
 const errorHandler = require("./middlewares/errorMiddleware");
 const chatbotRoutes = require("./routes/chatbot");
+const chatHistoryRoute = require('./routes/chatHistory');
 
 dotenv.config()
 
@@ -24,6 +25,7 @@ app.use(cors({
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(morgan("dev"))
+app.use(chatHistoryRoute);
 
 const port = process.env.PORT || 8080;
 

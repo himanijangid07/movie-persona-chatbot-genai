@@ -1,96 +1,126 @@
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Stack } from '@mui/material';
+import {
+  Box, Typography, TextField, Autocomplete, CircularProgress
+} from '@mui/material';
+import axiosInstance from '../api/axiosConfig';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios'
+
+const TMDB_API_KEY = process.env.REACT_APP_TMDB_API_KEY;
 
 const Homepage = () => {
-    const [message, setMessage] = useState("");
-    const [chatHistory, setChatHistory] = useState([
-        { from: "bot", text: "MovieBot: Hello, which character do you want to talk to today?" }
-    ]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const navigate = useNavigate();
 
-    const handleSendMessage = () => {
-        if (message.trim() !== "") {
-            setChatHistory([...chatHistory, { from: "user", text: message }]);
+  const fetchSuggestions = async (query) => {
+    if (!query) return;
+    setSearchLoading(true);
+    try {
+      const movieRes = await axios.get(
+        `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${query}`
+      );
 
-            // Simulating a bot response
-            setChatHistory((prevChatHistory) => [
-                ...prevChatHistory,
-                { from: "bot", text: `MovieBot: You said: ${message}` }
-            ]);
+      const suggestionList = [];
 
-            setMessage(""); // Clear input field
+      for (const movie of movieRes.data.results.slice(0, 5)) {
+        const creditsRes = await axios.get(
+          `https://api.themoviedb.org/3/movie/${movie.id}/credits?api_key=${TMDB_API_KEY}`
+        );
+        creditsRes.data.cast.slice(0, 3).forEach((cast) => {
+          suggestionList.push({
+            label: `${cast.character} (${movie.title})`,
+            value: cast.character
+          });
+        });
+      }
+
+      setSuggestions(suggestionList);
+    } catch (err) {
+      console.error('TMDB fetch error:', err);
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
+  const handleCharacterSelect = async (option) => {
+    if (!option) return;
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+        console.error("No token found. Please log in.");
+        return;
+    }
+    try {
+        const res = await axiosInstance.post('/api/v1/chat/select-character', { character: option.value }, {
+            headers: {
+                Authorization: `Bearer ${token}`  // Include the token in the headers
+            }
+        });
+        if (res.data.success) {
+            // Optionally store character in localStorage or context
+            localStorage.setItem('selectedCharacter', option.value);
+            navigate('/chat');
         }
-    };
+    } catch (err) {
+        console.error('Character select failed:', err);
+    }
+};
 
-    return (
-        <Box
-            height="calc(100vh - 70px)" // Subtract navbar height
-            display="flex"
-            flexDirection="column"
-            sx={{ backgroundColor: '#2e2e2e', color: 'white' }}
-        >
-            {/* Chat Title */}
-            <Box p={3} textAlign="center">
-                <Typography variant="h4" fontWeight="bold">
-                    Movie Character ChatBot 🎬🤖
-                </Typography>
-            </Box>
 
-            {/* Chat Message Box */}
-            <Box
-                flex={1}
-                mx={3}
-                p={2}
-                borderRadius={2}
-                sx={{
-                    backgroundColor: '#3a3a3a',
-                    overflowY: 'auto',
-                    maxHeight: 'calc(100vh - 200px)', // Control height to make chat scrollable
-                }}
-            >
-                {/* Display chat messages */}
-                <Stack spacing={2}>
-                    {chatHistory.map((message, index) => (
-                        <Box
-                            key={index}
-                            sx={{
-                                textAlign: message.from === "bot" ? "left" : "right",
-                                backgroundColor: message.from === "bot" ? '#555' : '#2e7d32',
-                                color: 'white',
-                                borderRadius: 2,
-                                p: 1,
-                                maxWidth: '80%',
-                                alignSelf: message.from === "bot" ? "flex-start" : "flex-end",
-                            }}
-                        >
-                            <Typography variant="body1">{message.text}</Typography>
-                        </Box>
-                    ))}
-                </Stack>
-            </Box>
+  return (
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '#2e2e2e',
+        color: 'white'
+      }}
+    >
+      {/* Title */}
+      <Box p={3} textAlign="center">
+        <Typography variant="h4" fontWeight="bold">
+          Movie Character ChatBot 🎬🤖
+        </Typography>
+      </Box>
 
-            {/* Input Section */}
-            <Box display="flex" gap={2} p={2}>
-                <TextField
-                    fullWidth
-                    placeholder="Type your message..."
-                    variant="filled"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    sx={{ backgroundColor: 'white', borderRadius: 2 }}
-                />
-                <Button
-                    variant="contained"
-                    sx={{ borderRadius: 2 }}
-                    onClick={handleSendMessage}
-                >
-                    Send
-                </Button>
-            </Box>
-            <Typography variant="p" p={1} sx={{textAlign: "center"}}>
-                Designed & Developed by himanijangid07
-            </Typography>
-        </Box>
-    );
+      {/* Character Search */}
+      <Box px={3} pb={2}>
+        <Autocomplete
+          freeSolo
+          loading={searchLoading}
+          options={suggestions}
+          onInputChange={(e, value) => fetchSuggestions(value)}
+          onChange={(e, value) => value && handleCharacterSelect(value)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Search for a movie character"
+              variant="filled"
+              fullWidth
+              sx={{ backgroundColor: 'white', borderRadius: 2 }}
+              InputProps={{
+                ...params.InputProps,
+                endAdornment: (
+                  <>
+                    {searchLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                    {params.InputProps.endAdornment}
+                  </>
+                )
+              }}
+            />
+          )}
+        />
+      </Box>
+
+      {/* Sticky Footer */}
+      <Box mt="auto">
+        <Typography variant="body2" p={1} textAlign="center" sx={{ backgroundColor: '#1e1e1e' }}>
+          Designed & Developed by himanijangid07
+        </Typography>
+      </Box>
+    </Box>
+  );
 };
 
 export default Homepage;

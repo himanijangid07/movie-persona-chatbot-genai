@@ -9,10 +9,11 @@ import { themeSettings } from "./theme";
 import {CssBaseline, ThemeProvider} from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import {Toaster} from 'react-hot-toast'
+import ChatPage from './pages/ChatPage'
 
 
 function App() {
-  const theme = useMemo(() => createTheme(themeSettings(), []))
+  const theme = useMemo(() => createTheme(themeSettings()), [])
 
   return (
     <ThemeProvider theme={theme}>
@@ -25,6 +26,7 @@ function App() {
             <Route path="/" element={<Homepage />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/chat" element={<ChatPage />} />
           </Routes>
         </div>
       </div>

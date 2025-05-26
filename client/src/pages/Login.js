@@ -3,7 +3,6 @@ import { Box, Typography, useTheme, useMediaQuery, TextField, Button, Alert, Col
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast'
 import axiosInstance from '../api/axiosConfig';
-import axios from 'axios'
 
 const Login = () => {
     const theme = useTheme();
@@ -20,7 +19,8 @@ const Login = () => {
         try {
             const {data} = await axiosInstance.post('/api/v1/auth/login', { email, password });
             toast.success("Login successful")
-            localStorage.setItem("authToken", true)
+            localStorage.setItem("authToken", data.token);
+            localStorage.setItem('userId', data.user._id);
             navigate('/')
         } catch (err) {
             console.log(err);  // log the actual error from axios

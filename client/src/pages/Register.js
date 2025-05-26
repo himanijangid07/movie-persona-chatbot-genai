@@ -3,7 +3,6 @@ import { Box, Typography, useTheme, useMediaQuery, TextField, Button, Alert, Col
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast'
 import axiosInstance from '../api/axiosConfig';
-import axios from 'axios'
 
 const Register = () => {
     const theme = useTheme();
