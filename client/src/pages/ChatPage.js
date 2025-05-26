@@ -105,7 +105,7 @@ const ChatPage = () => {
     }
   
     try {
-      const res = await axiosInstance.post('/api/v1/chat', {
+      const res = await axiosInstance.post('/api/v1/chat/chat', {
         userId: localStorage.getItem('userId'),
         message,
         character: selectedCharacter
