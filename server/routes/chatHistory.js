@@ -3,7 +3,7 @@ const router = express.Router();
 const Chat = require('../models/chatModel'); // Adjust path as needed
 
 // Save chat history
-router.post('/api/v1/chat-history', async (req, res) => {
+router.post('/chat-history', async (req, res) => {
   try {
     const { userId, character, messages } = req.body;
     
@@ -32,7 +32,7 @@ router.post('/api/v1/chat-history', async (req, res) => {
 });
 
 // Get chat history
-router.get('/api/v1/chat-history', async (req, res) => {
+router.get('/chat-history', async (req, res) => {
   try {
     const { userId, character } = req.query;
 

@@ -29,7 +29,7 @@ app.use(morgan("dev"));
 // API routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/chat', chatbotRoutes);
-app.use(chatHistoryRoute);
+app.use('/api/v1/', chatHistoryRoute);
 
 // Serve static React frontend
 app.use(express.static(path.join(__dirname, 'client/build')));
