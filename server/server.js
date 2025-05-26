@@ -18,7 +18,8 @@ connectDB();
 const app = express();
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://movie-persona-chatbot-genai-7m11e99c3-himanijangid07s-projects.vercel.app/']
+  origin: ['http://localhost:3000', 'https://movie-persona-chatbot-genai-bsu3lpuhu-himanijangid07s-projects.vercel.app/'],
+  credentials: true,
 }));
 
 app.use(express.json());
