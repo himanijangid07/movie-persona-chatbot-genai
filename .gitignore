@@ -1,2 +1,3 @@
 .env
 node_modules/server/*.json
+server/movie-chatbot-458410-a063597178c1.json
