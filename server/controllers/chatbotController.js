@@ -3,7 +3,7 @@ const Chat = require("../models/chatModel");
 require("dotenv").config();
 const axios = require("axios");
 
-// Language detection
+// --- Helper: Language Detection ---
 function detectLanguage(text) {
   const hindiWords = ["hai", "kya", "bhai", "re", "ho", "ka", "ab", "toh", "mujhe", "bhi", "kahan"];
   let hindiCount = 0;
@@ -15,7 +15,7 @@ function detectLanguage(text) {
   return hindiCount > 3 ? "hinglish" : "english";
 }
 
-// Emoji tone enhancer
+// --- Helper: Emoji Tone Enhancer ---
 function addEmojiTone(response) {
   const positiveWords = ["great", "awesome", "love", "happy", "yes", "sure", "enjoy", "fun", "cool", "nice"];
   const negativeWords = ["no", "not", "hate", "angry", "sad", "bad", "upset", "annoyed"];
@@ -33,6 +33,7 @@ function addEmojiTone(response) {
   return response + " 🤔";
 }
 
+// --- Helper: Replace Actions with Emojis ---
 function replaceActionsWithEmojis(text) {
   const actionMap = {
     "\\*smirks\\*": "😏",
@@ -52,14 +53,10 @@ function replaceActionsWithEmojis(text) {
   return text;
 }
 
-
-
-// Select character route
+// --- Route: Select Character ---
 exports.selectCharacter = async (req, res) => {
   const { character } = req.body;
   const userId = req.user.id;
-
-  console.log("Received character from frontend:", character);
 
   if (!character) {
     return res.status(400).json({ success: false, message: "Character is required" });
@@ -88,7 +85,6 @@ Never echo questions or answers. Just respond directly, naturally, and creativel
 
 ⚠️ Never mention you are an AI. Always stay in character, with wit, emotion, and depth.`;
 
-
     const user = await User.findByIdAndUpdate(
       userId,
       { currentCharacter: character, characterPrompt: characterPrompt },
@@ -100,22 +96,21 @@ Never echo questions or answers. Just respond directly, naturally, and creativel
       message: `You are now chatting with ${character}`,
       character: user.currentCharacter
     });
+
   } catch (error) {
     console.error("TMDB fetch error:", error.message);
     return res.status(500).json({ success: false, error: "Character lookup failed" });
   }
 };
 
-// Chat with character route
+// --- Route: Chat with Character ---
 exports.chatWithCharacter = async (req, res) => {
-  console.log("🔥 OpenRouter chat route hit");
-  console.log("BODY RECEIVED:", req.body);
   const { userId, message } = req.body;
   const user = await User.findById(userId);
+
   if (!user || !user.currentCharacter) {
     return res.status(400).json({ success: false, error: "Please select a character first." });
   }
-
 
   const character = user.currentCharacter;
   const language = detectLanguage(message);
@@ -124,7 +119,6 @@ exports.chatWithCharacter = async (req, res) => {
   if (language === "hinglish") {
     characterPrompt = `You are ${character}, a Bollywood character. Talk in Hinglish (mix of Hindi and English, written in English script).
 ⚠️ Important: Do NOT repeat or quote the user's message in your reply. Respond naturally, in your iconic slang and punchlines. Never break character or say you are an AI.`;
-
   } else {
     characterPrompt = `You are ${character}, a fictional character from movies. 
 Your role is to engage the user in a realistic conversation in your own voice and tone. 
@@ -133,8 +127,7 @@ Never mention being an AI. Stay in character with wit, emotion, and depth.`;
   }
 
   const previousChats = await Chat.find({ userId }).sort({ timestamp: -1 }).limit(10).lean();
-previousChats.reverse(); // maintain chronological order
-
+  previousChats.reverse();
 
   const messages = [
     { role: "system", content: characterPrompt },
@@ -169,7 +162,6 @@ previousChats.reverse(); // maintain chronological order
     let reply = response.data.choices[0].message.content;
     reply = addEmojiTone(reply);
     reply = replaceActionsWithEmojis(reply);
-
 
     await Chat.create({
       userId,

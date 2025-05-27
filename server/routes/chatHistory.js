@@ -6,7 +6,7 @@ const Chat = require('../models/chatModel'); // Adjust path as needed
 router.post('/chat-history', async (req, res) => {
   try {
     const { userId, character, messages } = req.body;
-    
+
     // Log incoming request data for debugging
     console.log('Request data:', req.body);
 
