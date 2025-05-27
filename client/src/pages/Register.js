@@ -20,7 +20,7 @@ const Register = () => {
         try {
             await axiosInstance.post('/api/v1/auth/register', { username, email, password });
             toast.success("User registered successfully")
-            navigate('/login')
+            navigate('/homepage')
         } catch (err) {
             console.log(err);  // log the actual error from axios
             if (err.response && err.response.data && err.response.data.error) {

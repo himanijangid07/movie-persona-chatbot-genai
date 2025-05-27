@@ -21,7 +21,7 @@ const Login = () => {
             toast.success("Login successful")
             localStorage.setItem("authToken", data.token);
             localStorage.setItem('userId', data.user._id);
-            navigate('/')
+            navigate('/homepage')
         } catch (err) {
             console.log(err);  // log the actual error from axios
             if (err.response && err.response.data && err.response.data.error) {
